@@ -20,9 +20,11 @@ public class SpawnOnMap : MonoBehaviour
 
     [SerializeField]
     float _spawnScale = 100f;
+    
 
     [SerializeField]
     GameObject _markerPrefab;
+    [SerializeField] private Dropdown _dropdown;
 
     List<GameObject> _spawnedObjects;
 
@@ -31,12 +33,17 @@ public class SpawnOnMap : MonoBehaviour
     bool _showMuseums = true;
     bool _showStatues = true;
     bool _showHistoric = true;
+    
 
-    void Start()
+    private int selectedEventID = -1;
+
+    private void Start()
     {
         _locations = new Vector2d[_locationStrings.Length];
         _spawnedObjects = new List<GameObject>();
-        for (int i = 0; i < _locationStrings.Length; i++)
+        var options = new List<Dropdown.OptionData>();
+
+        for (var i = 0; i < _locationStrings.Length; i++)
         {
             var locationString = _locationStrings[i];
             _locations[i] = Conversions.StringToLatLon(locationString);
@@ -44,10 +51,57 @@ public class SpawnOnMap : MonoBehaviour
             instance.GetComponent<EventPointer>().eventPos = _locations[i];
             instance.GetComponent<EventPointer>().eventID = i + 1;
             instance.GetComponent<EventPointer>().eventName = GetObjectName(i + 1);
-            instance.GetComponent<EventPointer>().eventDescription = GetObjectDescription(i + 1); // Se llama a la función GetObjectName para obtener el nombre correspondiente
+            instance.GetComponent<EventPointer>().eventDescription = GetObjectDescription(i + 1);
             instance.transform.localPosition = _map.GeoToWorldPosition(_locations[i], true);
             instance.transform.localScale = new Vector3(_spawnScale, _spawnScale, _spawnScale);
             _spawnedObjects.Add(instance);
+
+            options.Add(new Dropdown.OptionData(GetObjectName(i + 1)));
+        }
+
+        _dropdown.ClearOptions();
+        _dropdown.AddOptions(options);
+        _dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+    }
+
+    public void DropdownValueChanged(Dropdown change)
+    {
+        selectedEventID = change.value + 1;
+    }
+
+    private void OnDropdownValueChanged(int index)
+    {
+        // Desactivar todos los marcadores
+        foreach (var obj in _spawnedObjects)
+        {
+            obj.SetActive(false);
+        }
+
+        // Obtener el evento seleccionado y activar su marcador
+        var eventName = _dropdown.options[index].text;
+        foreach (var obj in _spawnedObjects)
+        {
+            var eventPointer = obj.GetComponent<EventPointer>();
+            if (eventPointer.eventName == eventName)
+            {
+                obj.SetActive(true);
+                _map.UpdateMap();
+                break;
+            }
+        }
+        
+    }
+
+    public void AddEventToList()
+    {
+        if (selectedEventID != -1)
+        {
+            GameObject selectedEventObject = _spawnedObjects[selectedEventID - 1];
+            if (!selectedEventObject.activeSelf)
+            {
+                selectedEventObject.SetActive(true);
+                _list.text += GetObjectName(selectedEventID) + "\n";
+            }
         }
     }
 
@@ -136,6 +190,12 @@ public class SpawnOnMap : MonoBehaviour
                 break;
             case 27:
                 objectName = "Museo regional centro INAH";
+                break;
+            case 28:
+                objectName = "Museo regional centro INAH";
+                break;
+            case 29:
+                objectName = "jiohuihoijokopklól";
                 break;
         }
         return objectName;
@@ -227,6 +287,12 @@ public class SpawnOnMap : MonoBehaviour
             case 27:
                 objectDescripcion = "Museo regional centro INAH";
                 break;
+            case 28:
+                objectDescripcion = "Museo regional centro INAH";
+                break;
+            case 29:
+                objectDescripcion = "ijkhkhhjkjkhjkhjkhji";
+                break;
         }
         return objectDescripcion;
     }
@@ -252,7 +318,7 @@ public class SpawnOnMap : MonoBehaviour
             var eventID = spawnedObject.GetComponent<EventPointer>().eventID;
             spawnedObject.SetActive(
                 (_showParks && eventID >= 1 && eventID <= 5) ||
-                (_showMuseums && eventID >= 24 && eventID <= 27) ||
+                (_showMuseums && eventID >= 24 && eventID <= 29) ||
                 (_showStatues && eventID >= 16 && eventID <= 23) ||
                 (_showHistoric && eventID >= 6 && eventID <= 15)
 
@@ -297,4 +363,6 @@ public class SpawnOnMap : MonoBehaviour
     {
         _showHistoric = value;
     }
+
+    
 }
