@@ -128,10 +128,7 @@ namespace Mapbox.Unity.Location
 			}
 			Instance = this;
 
-			if (_dontDestroyOnLoad)
-			{
-				DontDestroyOnLoad(gameObject);
-			}
+			
 
 			InjectEditorLocationProvider();
 			InjectDeviceLocationProvider();

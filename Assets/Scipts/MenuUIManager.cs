@@ -11,6 +11,7 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private GameObject user;
     [SerializeField] private GameObject filro_mapas;
     [SerializeField] private GameObject filro_valoracion;
+    [SerializeField] private SpawnOnMap spawnOnMap;
  
 
     bool isUIPanelActive;
@@ -117,18 +118,19 @@ public class MenuUIManager : MonoBehaviour
     public void Displayfiltros()
     {
         if(isfiltro == false && isfilval==false)
-        
         {
             eventPanelUserNotInRange.SetActive(false);
             filro_mapas.SetActive(false);
             isfilval = false;
             isfiltro = true;
+
+            // Desactivar la función EventShow de SpawnOnMap
+            spawnOnMap.DisableEventShow();
         }
         else
         {
             filro_mapas.SetActive(true); 
             isfiltro = false; 
-                
         }
     }
 

@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7489466698497941904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalPosition: {x: -0.02, y: 49.98, z: 0}
   m_LocalScale: {x: 190.90016, y: 190.90016, z: 190.90016}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -114,10 +114,21 @@ MonoBehaviour:
   amplitude: 2
   frequency: 0.5
   _name: {fileID: 0}
+  _name2: {fileID: 0}
   _description: {fileID: 0}
+  _description2: {fileID: 0}
+  _dificultad: {fileID: 0}
+  _dificultad2: {fileID: 0}
+  _seguridad: {fileID: 0}
+  _seguridad2: {fileID: 0}
+  _visit: {fileID: 0}
+  _visit2: {fileID: 0}
   eventPos:
     x: 0
     y: 0
   eventID: 0
   eventName: 
   eventDescription: 
+  ValSeguridad: 
+  Valdificultad: 
+  VisitasClanes: 
