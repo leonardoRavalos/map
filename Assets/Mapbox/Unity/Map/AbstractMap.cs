@@ -481,8 +481,6 @@ namespace Mapbox.Unity.Map
 			{
 				TileProvider.ExtentChanged -= OnMapExtentChanged;
 			}
-			_mapVisualizer.ClearMap();
-			_mapVisualizer.Destroy();
 		}
 
 		protected virtual void Awake()
@@ -492,7 +490,7 @@ namespace Mapbox.Unity.Map
 				DisableEditorPreview();
 				_previewOptions.isPreviewEnabled = false;
 			}
-			MapOnAwakeRoutine();
+			
 		}
 
 		protected virtual void Start()
@@ -503,7 +501,7 @@ namespace Mapbox.Unity.Map
 		private void MapOnAwakeRoutine()
 		{
 			// Destroy any ghost game objects.
-			DestroyChildObjects();
+			
 			// Setup a visualizer to get a "Starter" map.
 
 			if(_mapVisualizer == null)
@@ -516,14 +514,7 @@ namespace Mapbox.Unity.Map
 			};
 		}
 
-		public void DestroyChildObjects()
-		{
-			int destroyChildStartIndex = transform.childCount - 1;
-			for (int i = destroyChildStartIndex; i >= 0; i--)
-			{
-				transform.GetChild(i).gameObject.Destroy();
-			}
-		}
+		
 
 		private void MapOnStartRoutine(bool coroutine = true)
 		{

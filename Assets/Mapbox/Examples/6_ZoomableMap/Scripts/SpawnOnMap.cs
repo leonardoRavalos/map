@@ -33,6 +33,7 @@ public class SpawnOnMap : MonoBehaviour
     bool _showMuseums = true;
     bool _showStatues = true;
     bool _showHistoric = true;
+    bool _showObj = true;
     
 
     private int selectedEventID = -1;
@@ -71,13 +72,9 @@ public class SpawnOnMap : MonoBehaviour
 
     private void OnDropdownValueChanged(int index)
     {
-        // Desactivar todos los marcadores
-        foreach (var obj in _spawnedObjects)
-        {
-            obj.SetActive(false);
-        }
+        
 
-        // Obtener el evento seleccionado y activar su marcador
+        // Obtener el evento seleccionado y mostrar su objeto
         var eventName = _dropdown.options[index].text;
         foreach (var obj in _spawnedObjects)
         {
@@ -86,24 +83,41 @@ public class SpawnOnMap : MonoBehaviour
             {
                 obj.SetActive(true);
                 _map.UpdateMap();
+
+                // Agregar el objeto visible a la lista de objetos visibles
+                _spawnedObjects.Add(obj);
                 break;
             }
         }
-        
     }
-
-    public void AddEventToList()
+    public void ActualizarEventos()
     {
-        if (selectedEventID != -1)
+        StringBuilder sb = new StringBuilder("Puntos en el mapa:\n");
+        // Limpiar la cadena de texto
+
+        // Recorrer todos los objetos en la escena
+        foreach (GameObject obj in GameObject.FindObjectsOfType<GameObject>())
         {
-            GameObject selectedEventObject = _spawnedObjects[selectedEventID - 1];
-            if (!selectedEventObject.activeSelf)
+            // Verificar si el objeto tiene un componente EventPointer
+            if (obj.GetComponent<EventPointer>() != null)
             {
-                selectedEventObject.SetActive(true);
-                _list.text += GetObjectName(selectedEventID) + "\n";
+                // Verificar si el evento está activo
+                if (obj.activeSelf)
+                {
+                    // Agregar el nombre del evento a la cadena de texto
+                    sb.AppendLine(obj.GetComponent<EventPointer>().eventName);
+                }
             }
         }
+
+        // Actualizar el texto en el TextMeshProUGUI
+        _list.text = sb.ToString();
     }
+    public void OnClick()
+    {
+        ActualizarEventos();
+    }
+
 
     private string GetObjectName(int eventID)
     {
@@ -192,10 +206,7 @@ public class SpawnOnMap : MonoBehaviour
                 objectName = "Museo regional centro INAH";
                 break;
             case 28:
-                objectName = "Museo regional centro INAH";
-                break;
-            case 29:
-                objectName = "jiohuihoijokopklól";
+                objectName = "";
                 break;
         }
         return objectName;
@@ -288,11 +299,9 @@ public class SpawnOnMap : MonoBehaviour
                 objectDescripcion = "Museo regional centro INAH";
                 break;
             case 28:
-                objectDescripcion = "Museo regional centro INAH";
+                objectDescripcion = "";
                 break;
-            case 29:
-                objectDescripcion = "ijkhkhhjkjkhjkhjkhji";
-                break;
+        
         }
         return objectDescripcion;
     }
@@ -311,20 +320,27 @@ public class SpawnOnMap : MonoBehaviour
         {
             var spawnedObject = _spawnedObjects[i];
             var location = _locations[i];
-            spawnedObject.transform.localPosition = _map.GeoToWorldPosition(location, true);
+            spawnedObject.transform.localPosition = _map.GeoToWorldPosition(location, false);
             spawnedObject.transform.localScale = new Vector3(_spawnScale, _spawnScale, _spawnScale);
 
             // Aplicar los filtros de acuerdo al eventoID
             var eventID = spawnedObject.GetComponent<EventPointer>().eventID;
             spawnedObject.SetActive(
                 (_showParks && eventID >= 1 && eventID <= 5) ||
-                (_showMuseums && eventID >= 24 && eventID <= 29) ||
-                (_showStatues && eventID >= 16 && eventID <= 23) ||
-                (_showHistoric && eventID >= 6 && eventID <= 15)
+                (_showMuseums && eventID >= 24 && eventID <= 27) ||
+                (_showStatues && eventID >= 6 && eventID <= 15) ||
+                (_showHistoric && eventID >= 16 && eventID <= 23) ||
+                (_showObj && eventID >= 28 && eventID <= 28)
 
             );
         }
     }
+
+    public void DisableEventShow()
+    {
+        enabled = false;
+    }
+
     private void ShowVisibleObjects()
     {
         // Usar StringBuilder para construir la cadena de texto que muestra los nombres de objetos visibles
@@ -362,6 +378,11 @@ public class SpawnOnMap : MonoBehaviour
     public void ToggleHistoric(bool value)
     {
         _showHistoric = value;
+    }
+
+    public void Toggleshow(bool value)
+    {
+        _showObj = value;
     }
 
     
